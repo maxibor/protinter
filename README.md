@@ -11,13 +11,13 @@
 ```c
 git clone https://github.com/maxibor/proteininteraction.git
 cd proteininteraction
-chmod +x protinter.py
+chmod +x protinter
 ```
 
 ## Example
 
 ```c
-./protinter.py --hydrophobic ./data/1bta.pdb > out.txt
+./protinter --hydrophobic ./data/1bta.pdb > out.txt
 ```
 The above example computes the hydrophobic interactions in `1BTA` and writes them in the file `out.txt`
 
