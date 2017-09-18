@@ -2,6 +2,10 @@
 
 **ProtInter** is a tool designed to calculate interactions of a single chain protein in a `.pdb` file.
 
+## Dependancies
+- Python 3
+- Biopython
+
 ## How to install
 
 ```c
