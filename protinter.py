@@ -1,0 +1,224 @@
+#!/usr/local/bin/python3
+
+from Bio.PDB.PDBParser import PDBParser
+from Bio.PDB.Polypeptide import PPBuilder
+import lib.interlib as pi
+import argparse
+import textwrap
+
+__author__ = "Maxime Borry"
+__version__ = 0.1
+
+
+def get_args():
+    '''This function parses and return arguments passed in'''
+    parser = argparse.ArgumentParser(
+        prog='protint.py',
+        description='Compute different interactions in protein stored in pdb files.')
+    parser.add_argument('file', help=".pdb entry file")
+    parser.add_argument(
+        '--hydrophobic',
+        action="store_true",
+        help="compute hydrophobic interactions [a]")
+    parser.add_argument(
+        '--disulphide',
+        action="store_true",
+        help="compute disulphide bridges [b]")
+    parser.add_argument(
+        '--ionic',
+        action="store_true",
+        help="compute ionic interactions [c]")
+    parser.add_argument(
+        '--aroaro',
+        action="store_true",
+        help="compute aromatic-aromatic interactions [d] [e]")
+    parser.add_argument(
+        '--arosul',
+        action="store_true",
+        help="compute aromatic-sulphur interactions [f]")
+    parser.add_argument(
+        '--catpi',
+        action="store_true",
+        help="compute cation-pi interactions [g]")
+    parser.add_argument(
+        '--hb1',
+        action="store_true",
+        help="compute main chain-main chain H-bonds [i] [j]")
+    parser.add_argument(
+        '--hb2',
+        action="store_true",
+        help="compute main chain-side chain H-bonds [i] [j]")
+    parser.add_argument(
+        '--hb3',
+        action="store_true",
+        help="compute side chain-side chain H-bonds [i] [j]")
+    parser.add_argument(
+        '--sep',
+        default=0,
+        type=int,
+        help="minimum interval separation two AA for interaction. Default = 0")
+    parser.add_argument(
+        '-a',
+        default=5.0,
+        type=float,
+        help="hydrophobic interactions max distance. Default = 5.0 Angstrom")
+    parser.add_argument(
+        '-b',
+        default=2.2,
+        type=float,
+        help="disulphide bridges max distance. Default = 2.2 Angstrom")
+    parser.add_argument(
+        '-c',
+        default=6.0,
+        type=float,
+        help="ionic interactions max distance. Default = 2.2 Angstrom")
+    parser.add_argument(
+        '-d',
+        default=4.5,
+        type=float,
+        help=" aromatic-aromatic interactions min distance. Default = 4.5 Angstrom")
+    parser.add_argument(
+        '-e',
+        default=7.0,
+        type=float,
+        help=" aromatic-aromatic interactions max distance. Default = 7.0 Angstrom")
+    parser.add_argument(
+        '-f',
+        default=5.3,
+        type=float,
+        help="aromatic-sulphur interactions max distance. Default = 5.3 Angstrom")
+    parser.add_argument(
+        '-g',
+        default=6.0,
+        type=float,
+        help="cation-pi interactions max distance. Default = 6 Angstrom")
+    parser.add_argument(
+        '-i',
+        default=3.5,
+        type=float,
+        help="Donor-acceptor distance cutoff (N and O). Default = 3.5 Angstrom")
+    parser.add_argument(
+        '-j',
+        default=4,
+        type=float,
+        help="Donor-acceptor distance cutoff (S). Default = 2.2 Angstrom")
+    args = parser.parse_args()
+
+    myfile = args.file
+    hydrophobic = args.hydrophobic
+    disulphide = args.disulphide
+    ionic = args.ionic
+    aroaro = args.aroaro
+    arosul = args.aroaro
+    catpi = args.aroaro
+    hb1 = args.hb1
+    hb2 = args.hb2
+    hb3 = args.hb3
+    a = args.a
+    b = args.b
+    c = args.c
+    d = args.d
+    e = args.e
+    f = args.f
+    g = args.g
+    i = args.i
+    j = args.j
+    interval = args.sep
+
+    return myfile, hydrophobic, disulphide, ionic, aroaro, arosul, catpi, hb1, hb2, hb3, a, b, c, d, e, f, g, i, j, interval
+
+
+myfile, hydrophobicRun, disulphideRun, ionicRun, aroaroRun, arosulRun, catpiRun, hb1Run, hb2Run, hb3Run, a, b, c, d, e, f, g, i, j, interval = get_args()
+
+if __name__ == "__main__":
+    p = PDBParser()
+    structure = p.get_structure('X', myfile)
+    for model in structure:
+        for chain in model:
+            for resid in chain:
+                if resid.get_resname() in pi.amino["aroaro"]:
+                    pi.center_mass(resid)
+                hydrophobic = pi.get_res(chain, amino_type="hydrophobic")
+                disulphide = pi.get_res(chain, amino_type="disulphide")
+                ionic = pi.get_res(chain, amino_type="ionic")
+                catpi = pi.get_res(chain, amino_type="cationpi")
+                aroaro = pi.get_res(chain, amino_type="aroaro")
+                arosul = pi.get_res(chain, amino_type="arosul")
+                hbond = pi.get_res(chain, amino_type="all")
+    ppb = PPBuilder()
+
+    print(" ----------------------------------------------- ")
+    print(
+        "|Sequence of the protein in " +
+        '{:20.20}'.format(
+            str(myfile)) +
+        "|")
+    print(" ----------------------------------------------- ")
+    for pp in ppb.build_peptides(structure):
+        # print(pp.get_sequence())
+        print(textwrap.fill(str(pp.get_sequence()), 49))
+
+    print("\n")
+
+    if hydrophobicRun:
+        print(" ----------------------------------------------- ")
+        print("| Hydrophobic Interactions                      |")
+        print("|-----------------------------------------------|")
+        print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
+        pi.calc_inter(hydrophobic, distmax=a, amino_type="hydrophobic", inter = interval)
+
+    if disulphideRun:
+        print(" ----------------------------------------------- ")
+        print("| Disulphide Interactions                       |")
+        print("|-----------------------------------------------|")
+        print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
+        pi.calc_inter(disulphide, distmax=b, amino_type="disulphide", inter = interval)
+
+    if ionicRun:
+        print(" ----------------------------------------------- ")
+        print("| Ionic Interactions                            |")
+        print("|-----------------------------------------------|")
+        print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
+        pi.calc_inter(ionic, distmax=c, amino_type="ionic", inter = interval)
+
+    if catpiRun:
+        print(" ----------------------------------------------- ")
+        print("| Cation Pi Interactions                        |")
+        print("|-----------------------------------------------|")
+        print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
+        pi.calc_inter(catpi, distmax=c, amino_type="cationpi", inter = interval)
+
+    if aroaroRun:
+        print(" ----------------------------------------------- ")
+        print("| Aromatic-aromatic Interactions                |")
+        print("|-----------------------------------------------|")
+        print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
+        pi.calc_inter(aroaro, distmin=e, distmax=f, amino_type="aroaro", inter = interval)
+
+    if arosulRun:
+        print(" ----------------------------------------------- ")
+        print("| Aromatic-sulphur Interactions                 |")
+        print("|-----------------------------------------------|")
+        print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
+        pi.calc_inter(arosul, distmax=g, amino_type="arosul", inter = interval)
+
+    if hb1Run:
+        print(" ----------------------------------------------- ")
+        print("| Hydrogen bonds MainChain - MainChain          |")
+        print("|-----------------------------------------------|")
+        print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
+        pi.calc_inter(hbond, distON=i, distS=j, amino_type="hbond_main_main", inter = interval)
+
+    if hb2Run:
+        print(" ----------------------------------------------- ")
+        print("| Hydrogen bonds MainChain - SideChain          |")
+        print("|-----------------------------------------------|")
+        print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
+        pi.calc_inter(hbond, distON=i, distS=j, amino_type="hbond_main_side", inter = interval)
+
+    if hb3Run:
+        print(" ----------------------------------------------- ")
+        print("| Hydrogen bonds SideChain - SideChain          |")
+        print("|-----------------------------------------------|")
+        print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
+        pi.calc_inter(hbond, distON=i, distS=j, amino_type="hbond_side_side", inter = interval)
