@@ -9,7 +9,7 @@
 ## How to install
 
 ```c
-git clone https://github.com/maxibor/proteininteraction.git
+git clone https://github.com/maxibor/protinter.git
 cd proteininteraction
 chmod +x protinter
 ```
