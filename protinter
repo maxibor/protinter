@@ -109,8 +109,8 @@ def get_args():
     disulphide = args.disulphide
     ionic = args.ionic
     aroaro = args.aroaro
-    arosul = args.aroaro
-    catpi = args.aroaro
+    arosul = args.arosul
+    catpi = args.catpi
     hb1 = args.hb1
     hb2 = args.hb2
     hb3 = args.hb3
@@ -186,21 +186,21 @@ if __name__ == "__main__":
         print("| Cation Pi Interactions                        |")
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
-        pi.calc_inter(catpi, distmax=c, amino_type="cationpi", inter = interval)
+        pi.calc_inter(catpi, distmax=g, amino_type="cationpi", inter = interval)
 
     if aroaroRun:
         print(" ----------------------------------------------- ")
         print("| Aromatic-aromatic Interactions                |")
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
-        pi.calc_inter(aroaro, distmin=e, distmax=f, amino_type="aroaro", inter = interval)
+        pi.calc_inter(aroaro, distmin=d, distmax=e, amino_type="aroaro", inter = interval)
 
     if arosulRun:
         print(" ----------------------------------------------- ")
         print("| Aromatic-sulphur Interactions                 |")
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
-        pi.calc_inter(arosul, distmax=g, amino_type="arosul", inter = interval)
+        pi.calc_inter(arosul, distmax=f, amino_type="arosul", inter = interval)
 
     if hb1Run:
         print(" ----------------------------------------------- ")

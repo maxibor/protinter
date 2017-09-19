@@ -179,8 +179,13 @@ def aroarofun(resid1, resid2, dmin=4.5, dmax=7):
     dmin, dmax: distance(float) in Angstrom, min and max for cutoff
     return: distance(float)  if < dist
     '''
+
     d = dist_center_mass_calc(resid1, resid2)
-    if d >= dmin and d <= dmax:
+    # if d > 5.3 and d < 7 :
+    #     print(d, dmin, dmax)
+    if (d > dmin) and (d < dmax):
+        # print("hello")
+        # print(resid1, resid2, d)
         return(d)
 
 
@@ -465,7 +470,7 @@ def calc_inter(
                         to_print = "| " + '{:<5}'.format(str(resid1).split()[1]) + "| " + '{:<7}'.format(
                             str(resid1).split()[3].split("=")[1])
                         to_print = to_print + "| " + '{:<5}'.format(str(resid2).split(
-                        )[1]) + "| " + '{:<7}'.format(str(resid1).split()[3].split("=")[1])
+                        )[1]) + "| " + '{:<7}'.format(str(resid2).split()[3].split("=")[1])
                         to_print = to_print + "| " + \
                             str('{:06.2f}'.format(res)) + "        |"
                         # print(resid1, resid2, res)
