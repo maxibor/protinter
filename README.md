@@ -1,3 +1,5 @@
+![](./img/logo.png)
+
 # ProtInter : Protein interaction calculator
 
 **ProtInter** is a tool designed to calculate interactions of a single chain protein in a `.pdb` file.
