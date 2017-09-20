@@ -22,17 +22,17 @@ chmod +x protinter
 ```c
 ./protinter --hydrophobic -csv ./data/1bta.pdb  
 ```
-The above example computes the hydrophobic interactions in `1BTA` and display the results, and writes them in the file `result_hydrophobic.csv`
+The above example computes the hydrophobic interactions in `1BTA`, displays the results, and writes them in the file `result_hydrophobic.csv`
 
 ## List of interactions available
 
 - hydrophobic interactions
-- disulphide interactions
-- hydrogen bonds
+- disulphide bridges
 - ionic interactions
 - aromatic-aromatic interactions
 - aromatic-sulphur interactions
 - cation-pi interactions
+- hydrogen bonds (use results with caution)
 
 Further informations on the interactions can be found [here](./doc/report.pdf)
 
