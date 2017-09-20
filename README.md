@@ -13,7 +13,7 @@
 
 ```c
 git clone https://github.com/maxibor/protinter.git
-cd proteininteraction
+cd protinter
 chmod +x protinter
 ```
 
