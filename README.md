@@ -20,9 +20,9 @@ chmod +x protinter
 ## Example
 
 ```c
-./protinter --hydrophobic ./data/1bta.pdb > out.txt
+./protinter --hydrophobic -csv ./data/1bta.pdb  
 ```
-The above example computes the hydrophobic interactions in `1BTA` and writes them in the file `out.txt`
+The above example computes the hydrophobic interactions in `1BTA` and display the results, and writes them in the file `result_hydrophobic.csv`
 
 ## List of interactions available
 
@@ -34,7 +34,7 @@ The above example computes the hydrophobic interactions in `1BTA` and writes the
 - aromatic-sulphur interactions
 - cation-pi interactions
 
-Further informations on the interactions can be found in the `doc` directory
+Further informations on the interactions can be found [here](./doc/report.pdf)
 
 ## Get help
 
