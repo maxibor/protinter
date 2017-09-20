@@ -13,7 +13,7 @@ __version__ = 0.1
 def get_args():
     '''This function parses and return arguments passed in'''
     parser = argparse.ArgumentParser(
-        prog='protint.py',
+        prog='protinter',
         description='Compute different interactions in protein stored in pdb files.')
     parser.add_argument('file', help=".pdb entry file")
     parser.add_argument(
