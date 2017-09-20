@@ -1,4 +1,4 @@
-<img src="./img/logo.png" alt="Drawing" style="width: 250px;"/>
+<img src="./img/logo.png" width="300">
 
 # ProtInter : Protein interaction calculator
 
