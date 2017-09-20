@@ -1,4 +1,4 @@
-![](./img/logo.png)
+<img src="./img/logo.png" alt="Drawing" style="width: 250px;"/>
 
 # ProtInter : Protein interaction calculator
 
