@@ -390,11 +390,13 @@ def get_res(chain, amino_type, amino=amino):
 def calc_inter(
         hydrophobic_dict,
         amino_type,
+        filename,
         distmin=0,
         distmax=7,
         distON=3.5,
         distS=4,
-        inter=0):
+        inter=0,
+        csv=False):
     '''
     Main function
     hydrophobic_dict: output(dict) of get_res() function
@@ -406,6 +408,8 @@ def calc_inter(
     inter: minimum interval(int) between two AA for interaction
     '''
     found = []
+    if csv:
+        to_csv = ["RES1 , idRES1 , RES2 , idRES2 , dist(Angstrom)"]
     keys = sorted([int(x) for x in list(hydrophobic_dict.keys())])
     for i in range(0, len(keys)):
         for j in range(0, len(keys)):
@@ -467,6 +471,15 @@ def calc_inter(
                     if (resid1, resid2) not in found and (
                             resid2, resid1) not in found:
                         found.append((resid1, resid2))
+                        if csv :
+                            to_print ='{:<5}'.format(str(resid1).split()[1]) + ", " + '{:<7}'.format(
+                                str(resid1).split()[3].split("=")[1])
+                            to_print = to_print + ", " + '{:<5}'.format(str(resid2).split(
+                            )[1]) + ", " + '{:<7}'.format(str(resid2).split()[3].split("=")[1])
+                            to_print = to_print + ", " + \
+                                str('{:06.2f}'.format(res))+"\n"
+                            to_csv.append(to_print)
+
                         to_print = "| " + '{:<5}'.format(str(resid1).split()[1]) + "| " + '{:<7}'.format(
                             str(resid1).split()[3].split("=")[1])
                         to_print = to_print + "| " + '{:<5}'.format(str(resid2).split(
@@ -481,3 +494,7 @@ def calc_inter(
           '{:<5}'.format(str(len(found))) +
           "interactions                     |")
     print(" -----------------------------------------------\n ")
+    if csv:
+        with open("result"+"_"+amino_type+".csv", "w") as fw:
+            for line in to_csv:
+                fw.write(line)

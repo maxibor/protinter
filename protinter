@@ -17,6 +17,10 @@ def get_args():
         description='Compute different interactions in protein stored in pdb files.')
     parser.add_argument('file', help=".pdb entry file")
     parser.add_argument(
+        '-csv',
+        action="store_true",
+        help="save results in csv files")
+    parser.add_argument(
         '--hydrophobic',
         action="store_true",
         help="compute hydrophobic interactions [a]")
@@ -105,6 +109,7 @@ def get_args():
     args = parser.parse_args()
 
     myfile = args.file
+    csv = args.csv
     hydrophobic = args.hydrophobic
     disulphide = args.disulphide
     ionic = args.ionic
@@ -125,10 +130,10 @@ def get_args():
     j = args.j
     interval = args.sep
 
-    return myfile, hydrophobic, disulphide, ionic, aroaro, arosul, catpi, hb1, hb2, hb3, a, b, c, d, e, f, g, i, j, interval
+    return myfile, csv, hydrophobic, disulphide, ionic, aroaro, arosul, catpi, hb1, hb2, hb3, a, b, c, d, e, f, g, i, j, interval
 
 
-myfile, hydrophobicRun, disulphideRun, ionicRun, aroaroRun, arosulRun, catpiRun, hb1Run, hb2Run, hb3Run, a, b, c, d, e, f, g, i, j, interval = get_args()
+myfile, csv, hydrophobicRun, disulphideRun, ionicRun, aroaroRun, arosulRun, catpiRun, hb1Run, hb2Run, hb3Run, a, b, c, d, e, f, g, i, j, interval = get_args()
 
 if __name__ == "__main__":
     p = PDBParser()
@@ -165,60 +170,60 @@ if __name__ == "__main__":
         print("| Hydrophobic Interactions                      |")
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
-        pi.calc_inter(hydrophobic, distmax=a, amino_type="hydrophobic", inter = interval)
+        pi.calc_inter(hydrophobic, csv=True, filename= myfile, distmax=a, amino_type="hydrophobic", inter = interval)
 
     if disulphideRun:
         print(" ----------------------------------------------- ")
         print("| Disulphide Interactions                       |")
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
-        pi.calc_inter(disulphide, distmax=b, amino_type="disulphide", inter = interval)
+        pi.calc_inter(disulphide, csv=True, filename= myfile, distmax=b, amino_type="disulphide", inter = interval)
 
     if ionicRun:
         print(" ----------------------------------------------- ")
         print("| Ionic Interactions                            |")
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
-        pi.calc_inter(ionic, distmax=c, amino_type="ionic", inter = interval)
+        pi.calc_inter(ionic, csv=True, filename= myfile, distmax=c, amino_type="ionic", inter = interval)
 
     if catpiRun:
         print(" ----------------------------------------------- ")
         print("| Cation Pi Interactions                        |")
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
-        pi.calc_inter(catpi, distmax=g, amino_type="cationpi", inter = interval)
+        pi.calc_inter(catpi, csv=True, filename= myfile, distmax=g, amino_type="cationpi", inter = interval)
 
     if aroaroRun:
         print(" ----------------------------------------------- ")
         print("| Aromatic-aromatic Interactions                |")
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
-        pi.calc_inter(aroaro, distmin=d, distmax=e, amino_type="aroaro", inter = interval)
+        pi.calc_inter(aroaro, csv=True, filename= myfile, distmin=d, distmax=e, amino_type="aroaro", inter = interval)
 
     if arosulRun:
         print(" ----------------------------------------------- ")
         print("| Aromatic-sulphur Interactions                 |")
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
-        pi.calc_inter(arosul, distmax=f, amino_type="arosul", inter = interval)
+        pi.calc_inter(arosul, csv=True, filename= myfile, distmax=f, amino_type="arosul", inter = interval)
 
     if hb1Run:
         print(" ----------------------------------------------- ")
         print("| Hydrogen bonds MainChain - MainChain          |")
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
-        pi.calc_inter(hbond, distON=i, distS=j, amino_type="hbond_main_main", inter = interval)
+        pi.calc_inter(hbond, csv=True, filename= myfile, distON=i, distS=j, amino_type="hbond_main_main", inter = interval)
 
     if hb2Run:
         print(" ----------------------------------------------- ")
         print("| Hydrogen bonds MainChain - SideChain          |")
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
-        pi.calc_inter(hbond, distON=i, distS=j, amino_type="hbond_main_side", inter = interval)
+        pi.calc_inter(hbond, csv=True, filename= myfile, distON=i, distS=j, amino_type="hbond_main_side", inter = interval)
 
     if hb3Run:
         print(" ----------------------------------------------- ")
         print("| Hydrogen bonds SideChain - SideChain          |")
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
-        pi.calc_inter(hbond, distON=i, distS=j, amino_type="hbond_side_side", inter = interval)
+        pi.calc_inter(hbond, csv=True, filename= myfile, distON=i, distS=j, amino_type="hbond_side_side", inter = interval)
