@@ -1,8 +1,5 @@
 <img src="./img/logo.png" width="300">
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 
 # ProtInter : Protein interaction calculator
 
