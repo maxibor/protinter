@@ -21,43 +21,43 @@ def get_args():
         action="store_true",
         help="save results in csv files")
     parser.add_argument(
-        '--hydrophobic',
+        '-hydrophobic',
         action="store_true",
         help="compute hydrophobic interactions [a]")
     parser.add_argument(
-        '--disulphide',
+        '-disulphide',
         action="store_true",
         help="compute disulphide bridges [b]")
     parser.add_argument(
-        '--ionic',
+        '-ionic',
         action="store_true",
         help="compute ionic interactions [c]")
     parser.add_argument(
-        '--aroaro',
+        '-aroaro',
         action="store_true",
         help="compute aromatic-aromatic interactions [d] [e]")
     parser.add_argument(
-        '--arosul',
+        '-arosul',
         action="store_true",
         help="compute aromatic-sulphur interactions [f]")
     parser.add_argument(
-        '--catpi',
+        '-catpi',
         action="store_true",
         help="compute cation-pi interactions [g]")
     parser.add_argument(
-        '--hb1',
+        '-hb1',
         action="store_true",
         help="compute main chain-main chain H-bonds [i] [j]")
     parser.add_argument(
-        '--hb2',
+        '-hb2',
         action="store_true",
         help="compute main chain-side chain H-bonds [i] [j]")
     parser.add_argument(
-        '--hb3',
+        '-hb3',
         action="store_true",
         help="compute side chain-side chain H-bonds [i] [j]")
     parser.add_argument(
-        '--sep',
+        '-sep',
         default=0,
         type=int,
         help="minimum interval separation two AA for interaction. Default = 0")
