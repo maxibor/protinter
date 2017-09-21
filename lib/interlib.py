@@ -1,6 +1,5 @@
 from math import sqrt
 
-# Interactions
 amino = {
     "hydrophobic": [
         "ALA",
@@ -98,7 +97,6 @@ def hydrophobicfun(atom1, atom2, dist=5):
     ):
         d = atom1 - atom2
         if d < dist:
-            # print(atom1.get_name(), atom2.get_name(),atom1-atom2)
             return(d)
 
 
@@ -110,11 +108,8 @@ def disulphidefun(atom1, atom2, dist=2.2):
     return: distance(float)  if < dist
     '''
     if "S" in atom1.get_name() and "S" in atom2.get_name():
-        # print(resid1,resid2)
-        # print(atom1.get_name(),"-",atom2.get_name(),"-",atom1-atom2)
         d = atom1 - atom2
         if d < dist:
-            # print(atom1.get_name(), atom2.get_name(),atom1-atom2)
             return(d)
 
 
@@ -136,13 +131,9 @@ def ionicfun(atom1, atom2, resid1, resid2, dist=6):
          and ("N" in atom2.get_name() and len(atom2.get_name()) > 1
               and resid2.get_resname() in ["LYS", "ARG", "HIS"]))
     ):
-        # print( hydrophobic_dict[keys[i]].get_resname(), "-",  hydrophobic_dict[keys[j]].get_resname())
         d = atom1 - atom2
         if d < dist:
-            # print(atom1.get_name(), atom2.get_name(),atom1-atom2)
             return(d)
-        # f = dist_check(atom1, atom2,dist)
-
 
 def cationpifun(atom1, atom2, resid1, resid2, dist=6):
     '''
@@ -168,7 +159,6 @@ def cationpifun(atom1, atom2, resid1, resid2, dist=6):
     ):
         d = atom1 - atom2
         if d < dist:
-            # print(interac, interac.count("C"),"-", atom1-atom2)
             return(d)
 
 
@@ -181,11 +171,8 @@ def aroarofun(resid1, resid2, dmin=4.5, dmax=7):
     '''
 
     d = dist_center_mass_calc(resid1, resid2)
-    # if d > 5.3 and d < 7 :
-    #     print(d, dmin, dmax)
+
     if (d > dmin) and (d < dmax):
-        # print("hello")
-        # print(resid1, resid2, d)
         return(d)
 
 
@@ -253,7 +240,6 @@ def center_mass(resid):
         ymean = ymean / 6
         zmean = zmean / 6
     resid.center_mass = (xmean, ymean, zmean)
-    # print(resid, resid.center_mass)
     return(resid)
 
 
@@ -285,7 +271,6 @@ def hbond_main_mainfun(atom1, atom2, distON=3.5, distS=4):
     name1 = atom1.get_name()
     name2 = atom2.get_name()
     if len(name1) == 1 and len(name2) == 1:
-        # print(name1,name2)
         if name1 == "O" and name2 == "H":
             d = hbondfun(
                 acceptor=atom1,
@@ -293,7 +278,6 @@ def hbond_main_mainfun(atom1, atom2, distON=3.5, distS=4):
                 distON=distON,
                 distS=distS)
             if d:
-                # print("True")
                 return(d)
         elif name2 == "O" and name1 == "H":
             d = hbondfun(
@@ -316,7 +300,6 @@ def hbond_main_sidefun(atom1, atom2, distON=3.5, distS=4):
     name1 = atom1.get_name()
     name2 = atom2.get_name()
     if len(name1) == 1 and len(name2) == 2:
-        # print(name1,name2)
         if (name1 in ["O", "N", "S"]) and (
                 "O" in name2 or "N" in name2 or "S" in name2):
             d = hbondfun(
@@ -325,10 +308,8 @@ def hbond_main_sidefun(atom1, atom2, distON=3.5, distS=4):
                 distON=distON,
                 distS=distS)
             if d:
-                # print("True")
                 return(d)
     if len(name1) == 2 and len(name2) == 1:
-        # print(name1,name2)
         if (name2 in ["O", "N", "S"]) and (
                 "O" in name1 or "N" in name1 or "S" in name1):
             d = hbondfun(
@@ -337,7 +318,6 @@ def hbond_main_sidefun(atom1, atom2, distON=3.5, distS=4):
                 distON=distON,
                 distS=distS)
             if d:
-                # print("True")
                 return(d)
 
 
@@ -486,7 +466,6 @@ def calc_inter(
                         )[1]) + "| " + '{:<7}'.format(str(resid2).split()[3].split("=")[1])
                         to_print = to_print + "| " + \
                             str('{:06.2f}'.format(res)) + "        |"
-                        # print(resid1, resid2, res)
                         print(to_print)
 
     print("|-----------------------------------------------|")

@@ -159,7 +159,6 @@ if __name__ == "__main__":
         "|")
     print(" ----------------------------------------------- ")
     for pp in ppb.build_peptides(structure):
-        # print(pp.get_sequence())
         print(textwrap.fill(str(pp.get_sequence()), 49))
 
     print("\n")
