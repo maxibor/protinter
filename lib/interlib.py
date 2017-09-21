@@ -471,13 +471,13 @@ def calc_inter(
                     if (resid1, resid2) not in found and (
                             resid2, resid1) not in found:
                         found.append((resid1, resid2))
-                        if csv :
-                            to_print ='{:<5}'.format(str(resid1).split()[1]) + ", " + '{:<7}'.format(
+                        if csv:
+                            to_print = '{:<5}'.format(str(resid1).split()[1]) + ", " + '{:<7}'.format(
                                 str(resid1).split()[3].split("=")[1])
                             to_print = to_print + ", " + '{:<5}'.format(str(resid2).split(
                             )[1]) + ", " + '{:<7}'.format(str(resid2).split()[3].split("=")[1])
                             to_print = to_print + ", " + \
-                                str('{:06.2f}'.format(res))+"\n"
+                                str('{:06.2f}'.format(res)) + "\n"
                             to_csv.append(to_print)
 
                         to_print = "| " + '{:<5}'.format(str(resid1).split()[1]) + "| " + '{:<7}'.format(
@@ -495,6 +495,6 @@ def calc_inter(
           "interactions                     |")
     print(" -----------------------------------------------\n ")
     if csv:
-        with open("result"+"_"+amino_type+".csv", "w") as fw:
+        with open("result" + "_" + amino_type + ".csv", "w") as fw:
             for line in to_csv:
                 fw.write(line)
