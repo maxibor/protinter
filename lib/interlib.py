@@ -409,7 +409,7 @@ def calc_inter(
     '''
     found = []
     if csv:
-        to_csv = ["RES1 , idRES1 , RES2 , idRES2 , dist(Angstrom)"]
+        to_csv = ["RES1 , idRES1 , RES2 , idRES2 , dist(Angstrom)\n"]
     keys = sorted([int(x) for x in list(hydrophobic_dict.keys())])
     for i in range(0, len(keys)):
         for j in range(0, len(keys)):
