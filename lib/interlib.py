@@ -350,6 +350,14 @@ def hbond_side_sidefun(atom1, atom2, distON=3.5, distS=4):
             if d:
                 return(d)
 
+def within_radiusfun(atom1, atom2, dist_min=4):
+    '''
+    get residues that have atom pairs that are within a certain distance
+    '''
+    d = atom1 - atom2
+    d = abs(d)
+    if d < dist_min:
+        return(d)
 
 def get_res(chain, amino_type, amino=amino):
     '''
@@ -376,7 +384,8 @@ def calc_inter(
         distON=3.5,
         distS=4,
         inter=0,
-        csv=False):
+        csv=False,
+        AtomMinDist=20):
     '''
     Main function
     hydrophobic_dict: output(dict) of get_res() function
@@ -391,56 +400,78 @@ def calc_inter(
     if csv:
         to_csv = ["RES1 , idRES1 , RES2 , idRES2 , dist(Angstrom)\n"]
     keys = sorted([int(x) for x in list(hydrophobic_dict.keys())])
-    for i in range(0, len(keys)):
-        for j in range(0, len(keys)):
+    for i in keys:
+        for j in keys:
             if i != j and abs(i - j) > inter:
-                f = False
-                resid1 = hydrophobic_dict[str(keys[i])]
-                resid2 = hydrophobic_dict[str(keys[j])]
+                InterOfResisFound = False
+                resid1 = hydrophobic_dict[str(i)]
+                resid2 = hydrophobic_dict[str(j)]
+                ResiduesToFarApart=False
+                WithinMinimumDist=False
                 for atom1 in resid1:
-                    if f:
+                    if ((amino_type == "hbond_main_side") or (amino_type == "hbond_side_side") or (amino_type == "hbond_main_main")):
+                        if ((atom1.get_name()=="C")):
+                            continue 
+                    if InterOfResisFound:
+                        break
+                    if ResiduesToFarApart:
+                        ResiduesToFarApart=False
+                        res=None
                         break
                     for atom2 in resid2:
+                        if WithinMinimumDist==False:
+                            if abs(atom1-atom2)>AtomMinDist:
+                                ResiduesToFarApart=True
+                                res=None
+                                break
+                            else:
+                                WithinMinimumDist=True
                         if amino_type == "hydrophobic":
                             res = hydrophobicfun(atom1, atom2, dist=distmax)
                             if res:
-                                f = True
+                                InterOfResisFound = True
                                 break
                         elif amino_type == "disulphide":
                             res = disulphidefun(atom1, atom2, dist=distmax)
                             if res:
-                                f = True
+                                InterOfResisFound = True
                                 break
                         elif amino_type == "ionic":
                             res = ionicfun(
                                 atom1, atom2, resid1, resid2, dist=distmax)
                             if res:
-                                f = True
+                                InterOfResisFound = True
                                 break
                         elif amino_type == "cationpi":
                             res = cationpifun(
                                 atom1, atom2, resid1, resid2, dist=distmax)
                             if res:
-                                f = True
+                                InterOfResisFound = True
                                 break
                         elif amino_type == "hbond_main_main":
                             res = hbond_main_mainfun(
                                 atom1, atom2, distON=distON, distS=distS)
                             if res:
-                                f = True
+                                InterOfResisFound = True
                                 break
                         elif amino_type == "hbond_main_side":
                             res = hbond_main_sidefun(
                                 atom1, atom2, distON=distON, distS=distS)
                             if res:
-                                f = True
+                                InterOfResisFound = True
                                 break
                         elif amino_type == "hbond_side_side":
                             res = hbond_side_sidefun(
                                 atom1, atom2, distON=distON, distS=distS)
                             if res:
-                                f = True
+                                InterOfResisFound = True
                                 break
+                        elif amino_type == "within_radius":
+                            res = within_radiusfun(
+                                atom1, atom2, dist_min=distmax)
+                            if res:
+                                InterOfResisFound = True
+                                break                        
 
                 if amino_type == "aroaro":
                     res = aroarofun(resid1, resid2, dmin=distmin, dmax=distmax)

@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/python3
 
 from Bio.PDB.PDBParser import PDBParser
 from Bio.PDB.Polypeptide import PPBuilder
@@ -20,6 +20,10 @@ def get_args():
         '-csv',
         action="store_true",
         help="save results in csv files")
+    parser.add_argument(
+        '-within_radius',
+        action="store_true",
+        help="return residues that are within 4A of each other")    
     parser.add_argument(
         '-hydrophobic',
         action="store_true",
@@ -106,12 +110,27 @@ def get_args():
         default=4,
         type=float,
         help="Donor-acceptor distance cutoff (S). Default = 2.2 Angstrom")
+    parser.add_argument(
+        '-w',
+        default=4,
+        type=float,
+        help="Distance threshold for within_radius (any atom). Default = 4.0 Angstrom")
+    parser.add_argument(
+        '-AtomMinDist',
+        default=30,
+        type=float,
+        help="Two potentially interacting amino acids are disregarded if two randomly selected atoms of these two amino acids have a distance greater than this value.")
+    parser.add_argument(
+        '-printSequence',
+        action="store_true",
+        help="Print the sequence of the protein.")    
     args = parser.parse_args()
-
+    
     myfile = args.file
     csv = args.csv
     hydrophobic = args.hydrophobic
     disulphide = args.disulphide
+    within_radius = args.within_radius
     ionic = args.ionic
     aroaro = args.aroaro
     arosul = args.arosul
@@ -128,40 +147,48 @@ def get_args():
     g = args.g
     i = args.i
     j = args.j
+    w = args.w
     interval = args.sep
+    AtomMinDist = args.AtomMinDist
+    printSequence = args.printSequence
 
-    return myfile, csv, hydrophobic, disulphide, ionic, aroaro, arosul, catpi, hb1, hb2, hb3, a, b, c, d, e, f, g, i, j, interval
+    return myfile, csv, hydrophobic, disulphide, ionic, aroaro, arosul, catpi, hb1, hb2, hb3,within_radius, a, b, c, d, e, f, g, i, j, w, interval, AtomMinDist, printSequence
 
 
 if __name__ == "__main__":
-    myfile, csv, hydrophobicRun, disulphideRun, ionicRun, aroaroRun, arosulRun, catpiRun, hb1Run, hb2Run, hb3Run, a, b, c, d, e, f, g, i, j, interval = get_args()
+    myfile, csv, hydrophobicRun, disulphideRun, ionicRun, aroaroRun, arosulRun, catpiRun, hb1Run, hb2Run, hb3Run,within_radius, a, b, c, d, e, f, g, i, j, w, interval, AtomMinDist, printSequence = get_args()
     p = PDBParser()
     structure = p.get_structure('X', myfile)
-    for model in structure:
-        for chain in model:
-            for resid in chain:
-                if resid.get_resname() in pi.amino["aroaro"]:
-                    pi.center_mass(resid)
-                hydrophobic = pi.get_res(chain, amino_type="hydrophobic")
-                disulphide = pi.get_res(chain, amino_type="disulphide")
-                ionic = pi.get_res(chain, amino_type="ionic")
-                catpi = pi.get_res(chain, amino_type="cationpi")
-                aroaro = pi.get_res(chain, amino_type="aroaro")
-                arosul = pi.get_res(chain, amino_type="arosul")
-                hbond = pi.get_res(chain, amino_type="all")
-    ppb = PPBuilder()
+    def get_residues(type_get):
+        for model in structure:
+            for chain in model:
+                for resid in chain:
+                    if (type_get=="aroaro") | (type_get=="arosul"):
+                        if resid.get_resname() in pi.amino["aroaro"]:
+                            pi.center_mass(resid)
+                    return_resis = pi.get_res(chain, amino_type=type_get)
+                    #disulphide = pi.get_res(chain, amino_type="disulphide")
+                    #ionic = pi.get_res(chain, amino_type="ionic")
+                    #catpi = pi.get_res(chain, amino_type="cationpi")
+                    #aroaro = pi.get_res(chain, amino_type="aroaro")
+                    #arosul = pi.get_res(chain, amino_type="arosul")
+                    #hbond = pi.get_res(chain, amino_type="all")
+        return(return_resis)
 
-    print(" ----------------------------------------------- ")
-    print(
-        "|Sequence of the protein in " +
-        '{:20.20}'.format(
-            str(myfile)) +
-        "|")
-    print(" ----------------------------------------------- ")
-    for pp in ppb.build_peptides(structure):
-        print(textwrap.fill(str(pp.get_sequence()), 49))
-
-    print("\n")
+    if printSequence:
+        ppb = PPBuilder()
+    
+        print(" ----------------------------------------------- ")
+        print(
+            "|Sequence of the protein in " +
+            '{:20.20}'.format(
+                str(myfile)) +
+            "|")
+        print(" ----------------------------------------------- ")
+        for pp in ppb.build_peptides(structure):
+            print(textwrap.fill(str(pp.get_sequence()), 49))
+    
+        print("\n")
 
     if hydrophobicRun:
         print(" ----------------------------------------------- ")
@@ -169,12 +196,13 @@ if __name__ == "__main__":
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
         pi.calc_inter(
-            hydrophobic,
+            get_residues("hydrophobic"),
             csv=csv,
             filename=myfile,
             distmax=a,
             amino_type="hydrophobic",
-            inter=interval)
+            inter=interval,
+            AtomMinDist=AtomMinDist)
 
     if disulphideRun:
         print(" ----------------------------------------------- ")
@@ -182,12 +210,13 @@ if __name__ == "__main__":
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
         pi.calc_inter(
-            disulphide,
+            get_residues("disulphide"),
             csv=csv,
             filename=myfile,
             distmax=b,
             amino_type="disulphide",
-            inter=interval)
+            inter=interval,
+            AtomMinDist=AtomMinDist)
 
     if ionicRun:
         print(" ----------------------------------------------- ")
@@ -195,12 +224,13 @@ if __name__ == "__main__":
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
         pi.calc_inter(
-            ionic,
+            get_residues("ionic"),
             csv=csv,
             filename=myfile,
             distmax=c,
             amino_type="ionic",
-            inter=interval)
+            inter=interval,
+            AtomMinDist=AtomMinDist)
 
     if catpiRun:
         print(" ----------------------------------------------- ")
@@ -208,12 +238,13 @@ if __name__ == "__main__":
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
         pi.calc_inter(
-            catpi,
+            get_residues("cationpi"),
             csv=csv,
             filename=myfile,
             distmax=g,
             amino_type="cationpi",
-            inter=interval)
+            inter=interval,
+            AtomMinDist=AtomMinDist)
 
     if aroaroRun:
         print(" ----------------------------------------------- ")
@@ -221,13 +252,14 @@ if __name__ == "__main__":
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
         pi.calc_inter(
-            aroaro,
+            get_residues("aroaro"),
             csv=csv,
             filename=myfile,
             distmin=d,
             distmax=e,
             amino_type="aroaro",
-            inter=interval)
+            inter=interval,
+            AtomMinDist=AtomMinDist)
 
     if arosulRun:
         print(" ----------------------------------------------- ")
@@ -235,12 +267,13 @@ if __name__ == "__main__":
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
         pi.calc_inter(
-            arosul,
+            get_residues("arosul"),
             csv=csv,
             filename=myfile,
             distmax=f,
             amino_type="arosul",
-            inter=interval)
+            inter=interval,
+            AtomMinDist=AtomMinDist)
 
     if hb1Run:
         print(" ----------------------------------------------- ")
@@ -248,13 +281,14 @@ if __name__ == "__main__":
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
         pi.calc_inter(
-            hbond,
+            get_residues("all"),
             csv=csv,
             filename=myfile,
             distON=i,
             distS=j,
             amino_type="hbond_main_main",
-            inter=interval)
+            inter=interval,
+            AtomMinDist=AtomMinDist)
 
     if hb2Run:
         print(" ----------------------------------------------- ")
@@ -262,13 +296,14 @@ if __name__ == "__main__":
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
         pi.calc_inter(
-            hbond,
+            get_residues("all"),
             csv=csv,
             filename=myfile,
             distON=i,
             distS=j,
             amino_type="hbond_main_side",
-            inter=interval)
+            inter=interval,
+            AtomMinDist=AtomMinDist)
 
     if hb3Run:
         print(" ----------------------------------------------- ")
@@ -276,10 +311,25 @@ if __name__ == "__main__":
         print("|-----------------------------------------------|")
         print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
         pi.calc_inter(
-            hbond,
+            get_residues("all"),
             csv=csv,
             filename=myfile,
             distON=i,
             distS=j,
             amino_type="hbond_side_side",
-            inter=interval)
+            inter=interval,
+            AtomMinDist=AtomMinDist)
+
+    if within_radius:
+        print(" ----------------------------------------------- ")
+        print("| Residues close to each other                  |")
+        print("|-----------------------------------------------|")
+        print("| RES1 | idRES1 | RES2 | idRES2 | dist(Angstrom)|")
+        pi.calc_inter(
+            get_residues("all"),
+            csv=csv,
+            filename=myfile,
+            distmax=w,
+            amino_type="within_radius",
+            inter=interval,
+            AtomMinDist=AtomMinDist)
