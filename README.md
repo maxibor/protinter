@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14851671.svg)](https://doi.org/10.5281/zenodo.14851671)
+
 <img src="./img/logo.png" width="300">
 
 
@@ -7,7 +9,13 @@
 
 ## How to install
 
-```c
+```bash
+pip install git+https://git@github.com:maxibor/protinter.git@master
+```
+
+or
+
+```bash
 git clone https://github.com/maxibor/protinter.git
 pip install .
 ```
@@ -93,3 +101,25 @@ Options:
 Thanks to everyone who also contributed to making ProtInter !
 
 - [Axel Schmidt](https://github.com/Ax-Sch)
+
+## Cite
+
+If you need to cite ProtInter, you can use the Zenodo record
+
+```
+Maxime Borry, & Axel Schmidt. (2025). maxibor/protinter: Protinter 0.9.2 (0.9.2). Zenodo. https://doi.org/10.5281/zenodo.14851671
+```
+
+```bibtex
+@software{maxime_borry_2025_14851671,
+  author       = {Maxime Borry and
+                  Axel Schmidt},
+  title        = {maxibor/protinter: Protinter 0.9.2},
+  month        = feb,
+  year         = 2025,
+  publisher    = {Zenodo},
+  version      = {0.9.2},
+  doi          = {10.5281/zenodo.14851671},
+  url          = {https://doi.org/10.5281/zenodo.14851671},
+}
+```
